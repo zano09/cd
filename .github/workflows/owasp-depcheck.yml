@@ -3,8 +3,6 @@ name: OWASP Dependency-Check
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   depcheck:
@@ -36,6 +34,10 @@ jobs:
           out: reports
           format: 'HTML,JSON'
           failOnCVSS: '0'
+
+      # Vérification : lister ce qui est généré
+      - name: Show reports dir
+        run: ls -la reports
 
       - name: Archive dependency check reports
         uses: actions/upload-artifact@v4
