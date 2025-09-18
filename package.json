@@ -1,0 +1,14 @@
+{
+  "name": "simple-webserver",
+  "version": "1.0.0",
+  "description": "A simple web server with outdated dependencies",
+  "main": "index.js",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "4.16.4",
+    "lodash": "4.17.20"
+  },
+  "engines": { "node": ">=10.0.0" },
+  "author": "Your Name",
+  "license": "MIT"
+}
