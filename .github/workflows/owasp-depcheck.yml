@@ -26,21 +26,33 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-	- name: Run OWASP Dependency-Check
-        	uses: dependency-check/Dependency-Check_Action@v4.0.3
-        	with:
-         	 project: cd
-         	 path: .
-         	 out: reports
-         	 format: 'HTML,JSON'
-         	 failOnCVSS: '0'
+s      - name: Run OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@v4.0.3
+        with:
+          project: cd
+          path: .
+          out: reports
+          format: 'HTML,JSON'
+          failOnCVSS: '0'
 
-      # Vérification : lister ce qui est généré
-      - name: Show reports dir
-        run: ls -la reports
+      - name: Normalize report filenames
+        shell: bash
+        run: |
+          echo "Workspace:"; pwd
+          echo "Reports dir (before):"; ls -la reports || true
+          # copie le premier .html/.json trouvé vers des noms fixes
+          HTML=$(ls reports/*.html 2>/dev/null | head -n1 || true)
+          JSON=$(ls reports/*.json 2>/dev/null | head -n1 || true)
+          if [ -n "$HTML" ]; then cp "$HTML" reports/dependency-check-report.html; fi
+          if [ -n "$JSON" ]; then cp "$JSON" reports/dependency-check-report.json; fi
+          echo "Reports dir (after):"; ls -la reports || true
 
       - name: Archive dependency check reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: reports
-          path: reports
+          path: |
+            reports/dependency-check-report.html
+            reports/dependency-check-report.json
+            reports/**
